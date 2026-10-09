@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Dashboard - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;position:sticky;top:0;z-index:50;}
+.stat-card{background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0;}
+.stat-card .stat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.stat-card .stat-value{font-size:1.8rem;font-weight:800;color:var(--navy);}
+.section-card{background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;margin-bottom:24px;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/company-dashboard.html" class="active"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/company-profile.html"><i class="bi bi-building"></i>Company Profile</a></li>
+    <li class="nav-item"><a href="/company-internships.html"><i class="bi bi-briefcase-fill"></i>Manage Opportunities</a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="localStorage.clear();window.location='/index.html'"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-700">Company Dashboard</h6>
+    <div class="d-flex align-items-center gap-3">
+      <div id="verifyBadge"></div>
+      <div class="fw-600 small text-muted" id="userEmail"></div>
+    </div>
+  </div>
+  <div class="p-4">
+    <div class="mb-4">
+      <h4 class="fw-800 mb-1">Welcome, <span id="companyNameTitle">Company</span> 👋</h4>
+      <p class="text-muted">Manage your opportunities and find top talent.</p>
+    </div>
+    
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-briefcase-fill"></i></div>
+          <div class="stat-value" id="statActive">—</div>
+          <div class="text-muted small">Active Opportunities</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fef3c7;color:#d97706;"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-value" id="statTotalApps">—</div>
+          <div class="text-muted small">Total Applicants</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#ede9fe;color:#7c3aed;"><i class="bi bi-star-fill"></i></div>
+          <div class="stat-value" id="statShortlisted">—</div>
+          <div class="text-muted small">Shortlisted</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-person-check-fill"></i></div>
+          <div class="stat-value" id="statSelected">—</div>
+          <div class="text-muted small">Hired</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h6 class="fw-700 mb-0">Quick Actions</h6>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+               <a href="/company-internships.html" class="btn btn-outline-primary w-100 py-3 text-start d-flex align-items-center"><i class="bi bi-plus-circle fs-3 me-3"></i> <div><div class="fw-700">Post Opportunity</div><div class="small fw-normal">Create a new job or internship</div></div></a>
+            </div>
+            <div class="col-md-6">
+               <a href="/company-profile.html" class="btn btn-outline-secondary w-100 py-3 text-start d-flex align-items-center"><i class="bi bi-building fs-3 me-3"></i> <div><div class="fw-700">Update Profile</div><div class="small fw-normal">Improve your company brand</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="section-card h-100">
+           <h6 class="fw-700 mb-3">Verification Status</h6>
+           <div id="verifyBox" class="text-center py-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+document.getElementById('userEmail').textContent=localStorage.getItem('userEmail')||'';
+
+async function loadDashboard(){
+  try{
+    const res=await fetch(`${API}/api/company/dashboard`,{headers:{Authorization:token}});
+    if(res.status===401){localStorage.clear();window.location='/login.html';return;}
+    const d=await res.json();
+    document.getElementById('companyNameTitle').textContent=d.companyName||'Company';
+    document.getElementById('statActive').textContent=d.activeInternships||0;
+    document.getElementById('statTotalApps').textContent=d.totalApplications||0;
+    document.getElementById('statShortlisted').textContent=d.shortlisted||0;
+    document.getElementById('statSelected').textContent=d.selected||0;
+    
+    const v=d.verificationStatus;
+    if(v==='VERIFIED'){
+      document.getElementById('verifyBadge').innerHTML='<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Verified</span>';
+      document.getElementById('verifyBox').innerHTML='<i class="bi bi-shield-check text-success fs-1 mb-2 d-block"></i><h6 class="fw-700 text-success">Verified Company</h6><p class="small text-muted mb-0">You can post opportunities and hire students.</p>';
+    }else if(v==='PENDING'){
+      document.getElementById('verifyBadge').innerHTML='<span class="badge bg-warning text-dark"><i class="bi bi-hourglass me-1"></i>Pending</span>';
+      document.getElementById('verifyBox').innerHTML='<i class="bi bi-shield-exclamation text-warning fs-1 mb-2 d-block"></i><h6 class="fw-700 text-warning">Pending Verification</h6><p class="small text-muted mb-0">Admin is reviewing your profile.</p>';
+    }else{
+      document.getElementById('verifyBadge').innerHTML='<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Unverified</span>';
+      document.getElementById('verifyBox').innerHTML='<i class="bi bi-shield-x text-danger fs-1 mb-2 d-block"></i><h6 class="fw-700 text-danger">Action Required</h6><p class="small text-muted mb-0">Please update your profile to get verified.</p><a href="/company-profile.html" class="btn btn-primary btn-sm mt-2">Update Profile</a>';
+    }
+  }catch(e){console.error(e);}
+}
+loadDashboard();
+</script>
+</body>
+</html>

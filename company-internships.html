@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Opportunities - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;position:sticky;top:0;z-index:50;}
+.section-card{background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;margin-bottom:24px;}
+.job-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:20px;margin-bottom:16px;}
+.badge-DRAFT{background:#e2e8f0;color:#475569;}
+.badge-PUBLISHED{background:#dcfce7;color:#166534;}
+.badge-CLOSED{background:#fee2e2;color:#991b1b;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/company-dashboard.html"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/company-internships.html" class="active"><i class="bi bi-briefcase-fill"></i>Manage Opportunities</a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="localStorage.clear();window.location='/index.html'"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-700">Manage Opportunities</h6>
+    <button class="btn btn-primary btn-sm" onclick="openCreateModal()"><i class="bi bi-plus me-1"></i>Post New Opportunity</button>
+  </div>
+  <div class="p-4">
+    <div id="verifyAlert" class="alert alert-warning d-none"><i class="bi bi-exclamation-triangle me-2"></i>Your company must be VERIFIED by an admin before you can post opportunities.</div>
+    <div class="section-card">
+      <div id="internshipList"><div class="text-center py-5"><div class="spinner-border text-primary"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title fw-700">Post Opportunity</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <form id="createForm">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label small fw-600">Title</label><input type="text" id="fTitle" class="form-control" required placeholder="e.g. Java Software Engineer Intern"></div>
+            <div class="col-12"><label class="form-label small fw-600">Description</label><textarea id="fDesc" class="form-control" rows="4" required></textarea></div>
+            <div class="col-md-6"><label class="form-label small fw-600">Location</label><input type="text" id="fLoc" class="form-control" required placeholder="e.g. Remote, Bangalore"></div>
+            <div class="col-md-6"><label class="form-label small fw-600">Stipend / Salary</label><input type="text" id="fStipend" class="form-control" required placeholder="e.g. ₹15,000/month"></div>
+            <div class="col-md-6"><label class="form-label small fw-600">Required Skills (comma separated)</label><input type="text" id="fSkills" class="form-control" required placeholder="Java, Spring Boot, MySQL"></div>
+            <div class="col-md-6"><label class="form-label small fw-600">Deadline (Optional)</label><input type="datetime-local" id="fDeadline" class="form-control"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" onclick="submitInternship()">Save Draft</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+let isVerified=false;
+
+async function checkStatus(){
+  try{
+    const res=await fetch(`${API}/api/company/profile`,{headers:{Authorization:token}});
+    const data=await res.json();
+    isVerified=data.verificationStatus==='VERIFIED';
+    if(!isVerified)document.getElementById('verifyAlert').classList.remove('d-none');
+    loadInternships();
+  }catch(e){}
+}
+
+async function loadInternships(){
+  try{
+    const res=await fetch(`${API}/api/company/internships`,{headers:{Authorization:token}});
+    const data=await res.json();
+    const el=document.getElementById('internshipList');
+    if(!data.length){el.innerHTML='<div class="text-center py-5 text-muted"><i class="bi bi-briefcase fs-1 d-block mb-3"></i><h5>No opportunities posted yet</h5></div>';return;}
+    el.innerHTML=data.map(i=>`
+      <div class="job-card">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h5 class="fw-700 mb-1">${i.title}</h5>
+          <span class="badge badge-${i.status}">${i.status}</span>
+        </div>
+        <div class="text-muted small mb-3"><i class="bi bi-geo-alt me-1"></i>${i.location} &nbsp;|&nbsp; <i class="bi bi-currency-rupee"></i>${i.stipend}</div>
+        <div class="d-flex gap-2">
+          ${i.status==='DRAFT'?`<button class="btn btn-success btn-sm" onclick="publish(${i.id})"><i class="bi bi-globe me-1"></i>Publish</button>`:''}
+          ${i.status==='PUBLISHED'?`<button class="btn btn-danger btn-sm" onclick="closeOpp(${i.id})">Close</button>`:''}
+          <button class="btn btn-outline-danger btn-sm" onclick="del(${i.id})"><i class="bi bi-trash"></i></button>
+        </div>
+      </div>
+    `).join('');
+  }catch(e){}
+}
+
+function openCreateModal(){
+  if(!isVerified)return alert('You must be verified by an admin before posting.');
+  document.getElementById('createForm').reset();
+  new bootstrap.Modal(document.getElementById('createModal')).show();
+}
+
+async function submitInternship(){
+  const data={
+    title:document.getElementById('fTitle').value,
+    description:document.getElementById('fDesc').value,
+    location:document.getElementById('fLoc').value,
+    stipend:document.getElementById('fStipend').value,
+    requiredSkills:document.getElementById('fSkills').value,
+    deadline:document.getElementById('fDeadline').value||null
+  };
+  try{
+    const res=await fetch(`${API}/api/company/internships`,{method:'POST',headers:{Authorization:token,'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(res.ok){bootstrap.Modal.getInstance(document.getElementById('createModal')).hide();loadInternships();}
+    else{const r=await res.json();alert(r.error||'Failed');}
+  }catch(e){}
+}
+
+async function publish(id){await fetch(`${API}/api/company/internships/${id}/publish`,{method:'POST',headers:{Authorization:token}});loadInternships();}
+async function closeOpp(id){await fetch(`${API}/api/company/internships/${id}/close`,{method:'POST',headers:{Authorization:token}});loadInternships();}
+async function del(id){if(confirm('Delete?')){await fetch(`${API}/api/company/internships/${id}`,{method:'DELETE',headers:{Authorization:token}});loadInternships();}}
+checkStatus();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}
+.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;position:sticky;top:0;z-index:50;}
+.section-card{background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;margin-bottom:20px;}
+.form-control:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/student-dashboard.html"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/student-profile.html" class="active"><i class="bi bi-person-fill"></i>My Profile</a></li>
+    <li class="nav-item"><a href="/internships.html"><i class="bi bi-search"></i>Find Internships</a></li>
+    <li class="nav-item"><a href="/student-applications.html"><i class="bi bi-file-text-fill"></i>My Applications</a></li>
+    <li class="nav-item"><a href="/student-saved.html"><i class="bi bi-bookmark-fill"></i>Saved</a></li>
+    <li class="nav-item"><a href="/student-notifications.html"><i class="bi bi-bell-fill"></i>Notifications</a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="localStorage.clear();window.location='/index.html'"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-700">My Profile</h6>
+    <div id="saveStatus"></div>
+  </div>
+  <div class="p-4">
+    <div id="successAlert" class="alert alert-success d-none"><i class="bi bi-check-circle me-2"></i>Profile updated successfully!</div>
+    <div id="errorAlert" class="alert alert-danger d-none"></div>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="section-card">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="profile-avatar" id="avatarEl">?</div>
+            <div>
+              <h5 class="fw-800 mb-1" id="displayName">Loading...</h5>
+              <div class="text-muted" id="displayEmail"></div>
+            </div>
+          </div>
+          <form id="profileForm">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Full Name</label>
+                <input class="form-control" id="fname" name="name" placeholder="Your full name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Phone</label>
+                <input class="form-control" id="fphone" name="phone" placeholder="+91 XXXXXXXXXX">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">College / University</label>
+                <input class="form-control" id="fcollege" name="college" placeholder="Your college name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Degree</label>
+                <input class="form-control" id="fdegree" name="degree" placeholder="e.g. B.Tech CSE">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Graduation Year</label>
+                <input class="form-control" id="fgrad" name="graduationYear" type="number" placeholder="e.g. 2025">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Location</label>
+                <input class="form-control" id="flocation" name="location" placeholder="City, State">
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-600 small">Skills <span class="text-muted fw-400">(comma-separated)</span></label>
+                <input class="form-control" id="fskills" name="skills" placeholder="Java, Spring Boot, MySQL, HTML, CSS">
+                <div class="form-text">Add skills separated by commas. This is used for smart job matching.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">GitHub URL</label>
+                <div class="input-group"><span class="input-group-text"><i class="bi bi-github"></i></span><input class="form-control" id="fgithub" name="github" placeholder="https://github.com/..."></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">LinkedIn URL</label>
+                <div class="input-group"><span class="input-group-text"><i class="bi bi-linkedin"></i></span><input class="form-control" id="flinkedin" name="linkedin" placeholder="https://linkedin.com/in/..."></div>
+              </div>
+              <div class="col-12 mt-3">
+                <label class="form-label fw-600 small">Resume / CV (PDF max 5MB)</label>
+                <div class="d-flex align-items-center gap-3">
+                  <input class="form-control w-auto" type="file" id="resumeUpload" accept="application/pdf">
+                  <span id="resumeLinkWrapper"></span>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-600 small">About Me</label>
+                <textarea class="form-control" id="fsummary" name="summary" rows="4" placeholder="Write a short professional summary about yourself..."></textarea>
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-primary px-5 fw-600" id="saveBtn"><i class="bi bi-save me-2"></i>Save Profile</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="section-card">
+          <h6 class="fw-700 mb-3">Profile Completion</h6>
+          <div class="progress mb-2" style="height:10px;"><div class="progress-bar bg-primary" id="completionBar" style="width:0%"></div></div>
+          <div class="small text-muted text-end"><span id="completionPct">0</span>% complete</div>
+          <hr>
+          <div class="small text-muted">
+            <div class="mb-2 fw-600">To improve your profile:</div>
+            <ul class="ps-3" id="tips"></ul>
+          </div>
+        </div>
+        <div class="section-card">
+          <h6 class="fw-700 mb-3">Quick Stats</h6>
+          <div class="d-flex justify-content-between small mb-2"><span class="text-muted">Applications</span><span class="fw-600" id="qTotal">—</span></div>
+          <div class="d-flex justify-content-between small mb-2"><span class="text-muted">Shortlisted</span><span class="fw-600 text-warning" id="qShort">—</span></div>
+          <div class="d-flex justify-content-between small"><span class="text-muted">Selected</span><span class="fw-600 text-success" id="qSel">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+
+document.getElementById('resumeUpload').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 5*1024*1024) { alert('File too large. Max 5MB'); return; }
+  
+  const wrapper = document.getElementById('resumeLinkWrapper');
+  wrapper.innerHTML = '<div class="spinner-border spinner-border-sm text-primary"></div>';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const res = await fetch(`${API}/api/student/profile/resume`, {
+      method: 'POST',
+      headers: { Authorization: token },
+      body: formData
+    });
+    const data = await res.json();
+    if(res.ok) {
+      const fullUrl = data.resumeUrl.startsWith('/') ? API + data.resumeUrl : data.resumeUrl;
+      wrapper.innerHTML = `<a href="${fullUrl}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf"></i> View Resume</a>`;
+    } else {
+      alert(data.error || 'Upload failed');
+      wrapper.innerHTML = '<span class="text-danger small">Upload failed</span>';
+    }
+  } catch(err) {
+    alert('Server error during upload');
+    wrapper.innerHTML = '<span class="text-danger small">Upload failed</span>';
+  }
+});
+
+async function loadProfile(){
+  try{
+    const [pRes,dRes]=await Promise.all([
+      fetch(`${API}/api/student/profile`,{headers:{Authorization:token}}),
+      fetch(`${API}/api/student/dashboard`,{headers:{Authorization:token}})
+    ]);
+    const p=await pRes.json();
+    const d=await dRes.json();
+    document.getElementById('displayName').textContent=p.name||p.email||'Student';
+    document.getElementById('displayEmail').textContent=p.email||'';
+    document.getElementById('avatarEl').textContent=(p.name||p.email||'S')[0].toUpperCase();
+    ['name','phone','college','degree','graduationYear','location','skills','github','linkedin','summary'].forEach(k=>{
+      const el=document.getElementById('f'+(k==='graduationYear'?'grad':k));
+      if(el&&p[k]!==null&&p[k]!==undefined)el.value=p[k];
+    });
+
+    if(p.resumeUrl) {
+      const fullUrl = p.resumeUrl.startsWith('/') ? API + p.resumeUrl : p.resumeUrl;
+      document.getElementById('resumeLinkWrapper').innerHTML = `<a href="${fullUrl}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf"></i> View Resume</a>`;
+    }
+
+    const pct=d.profileCompletion||0;
+    document.getElementById('completionBar').style.width=pct+'%';
+    document.getElementById('completionPct').textContent=pct;
+    document.getElementById('qTotal').textContent=d.totalApplications||0;
+    document.getElementById('qShort').textContent=d.shortlisted||0;
+    document.getElementById('qSel').textContent=d.selected||0;
+    // Tips
+    const tips=[];
+    if(!p.name)tips.push('Add your full name');
+    if(!p.skills)tips.push('Add your skills');
+    if(!p.college)tips.push('Add your college');
+    if(!p.summary)tips.push('Write a summary');
+    if(!p.github)tips.push('Add GitHub profile');
+    if(!p.linkedin)tips.push('Add LinkedIn profile');
+    document.getElementById('tips').innerHTML=tips.slice(0,4).map(t=>`<li>${t}</li>`).join('');
+  }catch(e){console.error(e);}
+}
+
+document.getElementById('profileForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+  const data={
+    name:document.getElementById('fname').value,
+    phone:document.getElementById('fphone').value,
+    college:document.getElementById('fcollege').value,
+    degree:document.getElementById('fdegree').value,
+    graduationYear:parseInt(document.getElementById('fgrad').value)||null,
+    location:document.getElementById('flocation').value,
+    skills:document.getElementById('fskills').value,
+    github:document.getElementById('fgithub').value,
+    linkedin:document.getElementById('flinkedin').value,
+    summary:document.getElementById('fsummary').value
+  };
+  try{
+    const res=await fetch(`${API}/api/student/profile`,{method:'PUT',headers:{Authorization:token,'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const result=await res.json();
+    if(res.ok){
+      document.getElementById('successAlert').classList.remove('d-none');
+      setTimeout(()=>document.getElementById('successAlert').classList.add('d-none'),3000);
+      loadProfile();
+    }else{
+      document.getElementById('errorAlert').textContent=result.error||'Update failed';
+      document.getElementById('errorAlert').classList.remove('d-none');
+    }
+  }catch(ex){document.getElementById('errorAlert').textContent='Server error';document.getElementById('errorAlert').classList.remove('d-none');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="bi bi-save me-2"></i>Save Profile';}
+});
+loadProfile();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

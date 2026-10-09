@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Applications - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;position:sticky;top:0;z-index:50;}
+.app-card{background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;transition:all .2s;}
+.app-card:hover{box-shadow:0 4px 15px rgba(0,0,0,.08);}
+.timeline{position:relative;padding-left:20px;}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:#e2e8f0;}
+.timeline-step{position:relative;margin-bottom:16px;}
+.timeline-step::before{content:'';position:absolute;left:-17px;top:4px;width:10px;height:10px;border-radius:50%;background:#e2e8f0;border:2px solid white;}
+.timeline-step.done::before{background:var(--primary);}
+.timeline-step.current::before{background:#f59e0b;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/student-dashboard.html"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/student-profile.html"><i class="bi bi-person-fill"></i>My Profile</a></li>
+    <li class="nav-item"><a href="/internships.html"><i class="bi bi-search"></i>Find Internships</a></li>
+    <li class="nav-item"><a href="/student-applications.html" class="active"><i class="bi bi-file-text-fill"></i>My Applications</a></li>
+    <li class="nav-item"><a href="/student-saved.html"><i class="bi bi-bookmark-fill"></i>Saved</a></li>
+    <li class="nav-item"><a href="/student-notifications.html"><i class="bi bi-bell-fill"></i>Notifications</a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="localStorage.clear();window.location='/index.html'"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-700">My Applications</h6>
+    <a href="/internships.html" class="btn btn-primary btn-sm"><i class="bi bi-plus me-1"></i>New Application</a>
+  </div>
+  <div class="p-4">
+    <!-- Filter Tabs -->
+    <div class="d-flex gap-2 mb-4 flex-wrap">
+      <button class="btn btn-primary btn-sm active" onclick="filterApps('ALL',this)">All</button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="filterApps('APPLIED',this)">Applied</button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="filterApps('SHORTLISTED',this)">Shortlisted</button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="filterApps('SELECTED',this)">Selected</button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="filterApps('REJECTED',this)">Rejected</button>
+    </div>
+    <div id="appList"><div class="text-center py-5"><div class="spinner-border text-primary"></div></div></div>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title fw-700">Withdraw Application</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">Are you sure you want to withdraw this application? This action cannot be undone.</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmWithdraw">Withdraw</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+let allApps=[];
+let withdrawId=null;
+
+const STEPS=['APPLIED','SHORTLISTED','SELECTED'];
+const STATUS_COLORS={'APPLIED':'primary','SHORTLISTED':'warning','SELECTED':'success','REJECTED':'danger','WITHDRAWN':'secondary'};
+
+function getTimeline(status){
+  const steps=['Applied','Shortlisted','Selected'];
+  const statuses=['APPLIED','SHORTLISTED','SELECTED'];
+  const idx=statuses.indexOf(status);
+  if(status==='REJECTED')return`<div class="text-danger small"><i class="bi bi-x-circle-fill me-1"></i>Application was rejected</div>`;
+  if(status==='WITHDRAWN')return`<div class="text-secondary small"><i class="bi bi-dash-circle me-1"></i>Application withdrawn</div>`;
+  return`<div class="timeline">${steps.map((s,i)=>`<div class="timeline-step ${i<idx?'done':i===idx?'current':''}"><span class="small fw-500">${s}</span></div>`).join('')}</div>`;
+}
+
+async function loadApps(){
+  try{
+    const res=await fetch(`${API}/api/student/applications`,{headers:{Authorization:token}});
+    allApps=await res.json();
+    renderApps(allApps);
+  }catch(e){document.getElementById('appList').innerHTML='<div class="alert alert-warning">Cannot connect to backend.</div>';}
+}
+
+function filterApps(status,btn){
+  document.querySelectorAll('.d-flex.gap-2 button').forEach(b=>{b.className='btn btn-outline-secondary btn-sm';});
+  btn.className='btn btn-primary btn-sm';
+  const filtered=status==='ALL'?allApps:allApps.filter(a=>a.status===status);
+  renderApps(filtered);
+}
+
+function renderApps(apps){
+  const el=document.getElementById('appList');
+  if(!apps.length){el.innerHTML='<div class="text-center py-5 text-muted"><i class="bi bi-inbox fs-1 d-block mb-3"></i><h5>No applications found</h5><a href="/internships.html" class="btn btn-primary mt-2">Browse Internships</a></div>';return;}
+  el.innerHTML=apps.map(a=>`
+    <div class="app-card">
+      <div class="row align-items-start">
+        <div class="col-md-6">
+          <h6 class="fw-700 mb-1">${a.internshipTitle}</h6>
+          <div class="text-muted small mb-2">${a.companyName} · ${a.location||'Not specified'}</div>
+          <div class="d-flex gap-2 align-items-center">
+            <span class="badge bg-${STATUS_COLORS[a.status]||'secondary'} bg-opacity-10 text-${STATUS_COLORS[a.status]||'secondary'} border border-${STATUS_COLORS[a.status]||'secondary'} border-opacity-25">${a.status}</span>
+            <span class="text-muted" style="font-size:.78rem">Applied ${new Date(a.appliedDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+          </div>
+        </div>
+        <div class="col-md-4 mt-3 mt-md-0">${getTimeline(a.status)}</div>
+        <div class="col-md-2 mt-3 mt-md-0 text-end">
+          ${a.status==='APPLIED'||a.status==='SHORTLISTED'?`<button class="btn btn-outline-danger btn-sm" onclick="showWithdraw(${a.id})"><i class="bi bi-x me-1"></i>Withdraw</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function showWithdraw(id){withdrawId=id;new bootstrap.Modal(document.getElementById('withdrawModal')).show();}
+document.getElementById('confirmWithdraw').addEventListener('click',async()=>{
+  if(!withdrawId)return;
+  try{
+    const res=await fetch(`${API}/api/student/applications/${withdrawId}/withdraw`,{method:'POST',headers:{Authorization:token}});
+    if(res.ok){bootstrap.Modal.getInstance(document.getElementById('withdrawModal')).hide();loadApps();}
+  }catch(e){}
+});
+loadApps();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

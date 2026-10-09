@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}
+body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;transition:.3s;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}
+.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.nav-item a i{width:18px;text-align:center;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.stat-card{background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0;}
+.stat-card .stat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.stat-card .stat-value{font-size:1.8rem;font-weight:800;color:var(--navy);}
+.section-card{background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;}
+.profile-bar .progress{height:10px;border-radius:5px;}
+.app-row{padding:14px 0;border-bottom:1px solid #f1f5f9;}
+.app-row:last-child{border-bottom:none;}
+.badge-APPLIED{background:#dbeafe;color:#1d4ed8;}
+.badge-SHORTLISTED{background:#fef3c7;color:#92400e;}
+.badge-SELECTED{background:#dcfce7;color:#166534;}
+.badge-REJECTED{background:#fee2e2;color:#991b1b;}
+.badge-WITHDRAWN{background:#f1f5f9;color:#475569;}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/student-dashboard.html" class="active"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/student-profile.html"><i class="bi bi-person-fill"></i>My Profile</a></li>
+    <li class="nav-item"><a href="/internships.html"><i class="bi bi-search"></i>Find Internships</a></li>
+    <li class="nav-item"><a href="/student-applications.html"><i class="bi bi-file-text-fill"></i>My Applications</a></li>
+    <li class="nav-item"><a href="/student-saved.html"><i class="bi bi-bookmark-fill"></i>Saved</a></li>
+    <li class="nav-item"><a href="/student-notifications.html"><i class="bi bi-bell-fill"></i>Notifications <span class="badge bg-danger ms-auto" id="notifBadge" style="display:none">0</span></a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-sm btn-outline-secondary d-md-none" onclick="document.getElementById('sidebar').style.transform='translateX(0)'"><i class="bi bi-list"></i></button>
+      <h6 class="mb-0 fw-700 text-navy">Dashboard</h6>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a href="/student-notifications.html" class="btn btn-sm btn-light position-relative"><i class="bi bi-bell"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="topNotifBadge" style="display:none"></span></a>
+      <div class="fw-600 small text-muted" id="userEmail"></div>
+    </div>
+  </div>
+  <div class="p-4">
+    <!-- Welcome -->
+    <div class="mb-4">
+      <h4 class="fw-800 mb-1">Good Morning, <span id="welcomeName">Student</span> 👋</h4>
+      <p class="text-muted">Here's what's happening with your career journey today.</p>
+    </div>
+    <!-- Profile Completion -->
+    <div class="section-card mb-4 profile-bar">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <div class="fw-600">Profile Completion</div>
+          <div class="text-muted small">Complete your profile to get better matches</div>
+        </div>
+        <a href="/student-profile.html" class="btn btn-outline-primary btn-sm">Complete Profile</a>
+      </div>
+      <div class="progress"><div class="progress-bar bg-primary" id="profileProgress" style="width:0%"></div></div>
+      <div class="text-end mt-1 small text-muted"><span id="profilePct">0</span>% Complete</div>
+    </div>
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-file-text-fill"></i></div>
+          <div class="stat-value" id="statTotal">—</div>
+          <div class="text-muted small">Applications</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fef3c7;color:#d97706;"><i class="bi bi-star-fill"></i></div>
+          <div class="stat-value" id="statShortlisted">—</div>
+          <div class="text-muted small">Shortlisted</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-trophy-fill"></i></div>
+          <div class="stat-value" id="statSelected">—</div>
+          <div class="text-muted small">Selected</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#ede9fe;color:#7c3aed;"><i class="bi bi-bookmark-fill"></i></div>
+          <div class="stat-value" id="statSaved">—</div>
+          <div class="text-muted small">Saved</div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4">
+      <!-- Recent Applications -->
+      <div class="col-lg-8">
+        <div class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-700 mb-0">Recent Applications</h6>
+            <a href="/student-applications.html" class="btn btn-outline-primary btn-sm">View All</a>
+          </div>
+          <div id="recentApps"><div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading...</div></div>
+        </div>
+      </div>
+      <!-- Quick Links -->
+      <div class="col-lg-4">
+        <div class="section-card mb-3">
+          <h6 class="fw-700 mb-3">Quick Actions</h6>
+          <div class="d-flex flex-column gap-2">
+            <a href="/internships.html" class="btn btn-primary"><i class="bi bi-search me-2"></i>Find Internships</a>
+            <a href="/student-profile.html" class="btn btn-outline-primary"><i class="bi bi-person me-2"></i>Update Profile</a>
+            <a href="/student-saved.html" class="btn btn-outline-secondary"><i class="bi bi-bookmark me-2"></i>View Saved</a>
+          </div>
+        </div>
+        <div class="section-card">
+          <h6 class="fw-700 mb-3">Recent Notifications</h6>
+          <div id="recentNotifs"><div class="text-center py-2 text-muted small">Loading...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+document.getElementById('userEmail').textContent=localStorage.getItem('userEmail')||'';
+
+async function loadDashboard(){
+  try{
+    const res=await fetch(`${API}/api/student/dashboard`,{headers:{Authorization:token}});
+    if(res.status===401){localStorage.clear();window.location='/login.html';return;}
+    const d=await res.json();
+    document.getElementById('welcomeName').textContent=d.name||'Student';
+    document.getElementById('statTotal').textContent=d.totalApplications||0;
+    document.getElementById('statShortlisted').textContent=d.shortlisted||0;
+    document.getElementById('statSelected').textContent=d.selected||0;
+    document.getElementById('statSaved').textContent=d.saved||0;
+    const pct=d.profileCompletion||0;
+    document.getElementById('profileProgress').style.width=pct+'%';
+    document.getElementById('profilePct').textContent=pct;
+    if(d.unreadNotifications>0){
+      document.getElementById('notifBadge').style.display='';
+      document.getElementById('topNotifBadge').style.display='';
+      document.getElementById('notifBadge').textContent=d.unreadNotifications;
+      document.getElementById('topNotifBadge').textContent=d.unreadNotifications;
+    }
+  }catch(e){console.error(e);}
+}
+
+async function loadApps(){
+  try{
+    const res=await fetch(`${API}/api/student/applications`,{headers:{Authorization:token}});
+    const apps=await res.json();
+    const el=document.getElementById('recentApps');
+    if(!apps.length){el.innerHTML='<div class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-2"></i>No applications yet.<br><a href="/internships.html">Start exploring!</a></div>';return;}
+    const statusColors={'APPLIED':'badge-APPLIED','SHORTLISTED':'badge-SHORTLISTED','SELECTED':'badge-SELECTED','REJECTED':'badge-REJECTED','WITHDRAWN':'badge-WITHDRAWN'};
+    el.innerHTML=apps.slice(0,5).map(a=>`
+      <div class="app-row d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fw-600 small">${a.internshipTitle}</div>
+          <div class="text-muted" style="font-size:.8rem">${a.companyName} · ${new Date(a.appliedDate).toLocaleDateString('en-IN')}</div>
+        </div>
+        <span class="badge ${statusColors[a.status]||'bg-secondary'}">${a.status}</span>
+      </div>`).join('');
+  }catch(e){}
+}
+
+async function loadNotifs(){
+  try{
+    const res=await fetch(`${API}/api/notifications`,{headers:{Authorization:token}});
+    const notifs=await res.json();
+    const el=document.getElementById('recentNotifs');
+    if(!notifs.length){el.innerHTML='<div class="text-muted small text-center">No notifications</div>';return;}
+    el.innerHTML=notifs.slice(0,3).map(n=>`
+      <div class="d-flex gap-2 mb-2 p-2 rounded-2 ${n.read?'':'bg-primary bg-opacity-5 border border-primary border-opacity-10'}">
+        <i class="bi bi-bell-fill text-primary mt-1" style="font-size:.75rem"></i>
+        <div class="small" style="line-height:1.4">${n.message}<div class="text-muted" style="font-size:.75rem">${new Date(n.createdDate).toLocaleDateString('en-IN')}</div></div>
+      </div>`).join('');
+  }catch(e){}
+}
+
+function doLogout(){localStorage.clear();window.location='/index.html';}
+loadDashboard();loadApps();loadNotifs();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

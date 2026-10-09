@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Profile - InternHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--navy:#0f172a;--sidebar-w:250px;}
+*{font-family:'Inter',sans-serif;}body{background:#f1f5f9;}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;top:0;left:0;background:var(--navy);overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800;font-size:1.2rem;color:white;}.sidebar-logo span{color:#60a5fa;}
+.nav-item a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:8px;margin:2px 8px;transition:.15s;}
+.nav-item a:hover,.nav-item a.active{background:rgba(96,165,250,.15);color:#60a5fa;}
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 28px;position:sticky;top:0;z-index:50;}
+.section-card{background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;margin-bottom:24px;}
+.logo-upload-box{width:120px;height:120px;border-radius:12px;border:2px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;background:#f8fafc;cursor:pointer;position:relative;overflow:hidden;}
+.logo-upload-box img{width:100%;height:100%;object-fit:cover;}
+.logo-upload-box .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:.2s;}
+.logo-upload-box:hover .overlay{opacity:1;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></div>
+  <ul class="nav flex-column mt-3" style="list-style:none;padding:0;">
+    <li class="nav-item"><a href="/company-dashboard.html"><i class="bi bi-grid-fill"></i>Dashboard</a></li>
+    <li class="nav-item"><a href="/company-profile.html" class="active"><i class="bi bi-building"></i>Company Profile</a></li>
+    <li class="nav-item"><a href="/company-internships.html"><i class="bi bi-briefcase-fill"></i>Manage Opportunities</a></li>
+    <li class="nav-item mt-3"><a href="#" onclick="localStorage.clear();window.location='/index.html'"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+  </ul>
+</div>
+<div class="main-content">
+  <div class="topbar d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-700">Company Profile</h6>
+    <div id="verifyBadge"></div>
+  </div>
+  <div class="p-4">
+    <div id="alertBox" class="alert d-none"></div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="section-card">
+          <form id="profileForm">
+            <div class="mb-4 d-flex gap-4 align-items-center">
+              <label for="logoUpload" class="logo-upload-box" id="logoPreview">
+                 <div class="text-muted text-center small p-2"><i class="bi bi-image fs-3 d-block mb-1"></i>Upload Logo</div>
+                 <div class="overlay"><i class="bi bi-upload fs-4 mb-1"></i><span class="small fw-600">Change</span></div>
+              </label>
+              <input type="file" id="logoUpload" accept="image/*" class="d-none">
+              <div>
+                <h5 class="fw-700 mb-1">Company Logo</h5>
+                <p class="text-muted small mb-0">Recommended size: 200x200px. Max size 2MB.</p>
+                <input type="hidden" id="fLogoUrl">
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Company Name</label>
+                <input type="text" class="form-control" id="fName" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Industry</label>
+                <input type="text" class="form-control" id="fIndustry" placeholder="e.g. Information Technology, Finance">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Location / Headquarters</label>
+                <input type="text" class="form-control" id="fLoc" placeholder="e.g. Hyderabad, India">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-600 small">Website URL</label>
+                <input type="url" class="form-control" id="fWeb" placeholder="https://www.example.com">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-600 small">Contact Email / Phone</label>
+                <input type="text" class="form-control" id="fContact" placeholder="hr@company.com / +91 ...">
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-600 small">About the Company</label>
+                <textarea class="form-control" id="fDesc" rows="5" placeholder="Write a brief description of your company, vision, and what you do..."></textarea>
+              </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top text-end">
+              <button type="submit" class="btn btn-primary px-4 fw-600" id="saveBtn"><i class="bi bi-save me-2"></i>Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="section-card">
+          <h6 class="fw-700 mb-3">Verification Process</h6>
+          <p class="small text-muted mb-3">For security, an admin must verify your profile before you can post any opportunities.</p>
+          <ul class="small text-muted ps-3 mb-0">
+            <li class="mb-2">Ensure your Company Name matches legal records.</li>
+            <li class="mb-2">Provide a valid Website URL.</li>
+            <li>Provide correct Contact Information.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8080';
+const token=localStorage.getItem('authToken');
+if(!token)window.location='/login.html';
+
+// Image Upload to File logic
+document.getElementById('logoUpload').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024) { alert('File too large. Max 2MB'); return; }
+  
+  const preview = document.getElementById('logoPreview');
+  preview.innerHTML = '<div class="spinner-border spinner-border-sm text-primary"></div>';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const res = await fetch(`${API}/api/company/profile/logo`, {
+      method: 'POST',
+      headers: { Authorization: token },
+      body: formData
+    });
+    const data = await res.json();
+    if(res.ok) {
+      const fullUrl = data.logoUrl.startsWith('/') ? API + data.logoUrl : data.logoUrl;
+      document.getElementById('fLogoUrl').value = data.logoUrl;
+      preview.innerHTML = `<img src="${fullUrl}"><div class="overlay"><i class="bi bi-upload fs-4 mb-1"></i><span class="small fw-600">Change</span></div>`;
+    } else {
+      alert(data.error || 'Upload failed');
+      preview.innerHTML = `<div class="text-muted text-center small p-2"><i class="bi bi-image fs-3 d-block mb-1"></i>Upload Logo</div>`;
+    }
+  } catch(err) {
+    alert('Server error during upload');
+    preview.innerHTML = `<div class="text-muted text-center small p-2"><i class="bi bi-image fs-3 d-block mb-1"></i>Upload Logo</div>`;
+  }
+});
+
+async function loadProfile(){
+  try{
+    const res=await fetch(`${API}/api/company/profile`,{headers:{Authorization:token}});
+    if(res.status===401){localStorage.clear();window.location='/login.html';return;}
+    const data=await res.json();
+    
+    // Set status badge
+    const v=data.verificationStatus;
+    const badgeMap={'VERIFIED':'<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Verified</span>','PENDING':'<span class="badge bg-warning text-dark"><i class="bi bi-hourglass me-1"></i>Pending</span>','REJECTED':'<span class="badge bg-danger">Rejected</span>'};
+    document.getElementById('verifyBadge').innerHTML=badgeMap[v]||'<span class="badge bg-danger">Unverified</span>';
+    
+    // Set fields
+    document.getElementById('fName').value = data.companyName || '';
+    document.getElementById('fIndustry').value = data.industry || '';
+    document.getElementById('fLoc').value = data.location || '';
+    document.getElementById('fWeb').value = data.website || '';
+    document.getElementById('fContact').value = data.contactInfo || '';
+    document.getElementById('fDesc').value = data.description || '';
+    
+    if(data.logoUrl) {
+      const fullUrl = data.logoUrl.startsWith('/') ? API + data.logoUrl : data.logoUrl;
+      document.getElementById('fLogoUrl').value = data.logoUrl;
+      document.getElementById('logoPreview').innerHTML = `<img src="${fullUrl}"><div class="overlay"><i class="bi bi-upload fs-4 mb-1"></i><span class="small fw-600">Change</span></div>`;
+    }
+  }catch(e){console.error(e);}
+}
+
+document.getElementById('profileForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+  
+  const payload = {
+    companyName: document.getElementById('fName').value,
+    industry: document.getElementById('fIndustry').value,
+    location: document.getElementById('fLoc').value,
+    website: document.getElementById('fWeb').value,
+    contactInfo: document.getElementById('fContact').value,
+    description: document.getElementById('fDesc').value,
+    logoUrl: document.getElementById('fLogoUrl').value
+  };
+
+  try{
+    const res=await fetch(`${API}/api/company/profile`,{
+      method:'PUT',
+      headers:{Authorization:token,'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const result=await res.json();
+    const alertBox = document.getElementById('alertBox');
+    alertBox.classList.remove('d-none');
+    if(res.ok){
+      alertBox.className = 'alert alert-success';
+      alertBox.innerHTML = '<i class="bi bi-check-circle me-2"></i>Profile updated successfully!';
+      setTimeout(()=>alertBox.classList.add('d-none'),3000);
+      loadProfile();
+    }else{
+      alertBox.className = 'alert alert-danger';
+      alertBox.textContent = result.error||'Failed to update profile';
+    }
+  }catch(ex){
+    document.getElementById('alertBox').className = 'alert alert-danger';
+    document.getElementById('alertBox').innerHTML = 'Server error connecting to backend.';
+    document.getElementById('alertBox').classList.remove('d-none');
+  }
+  finally{btn.disabled=false; btn.innerHTML='<i class="bi bi-save me-2"></i>Save Changes';}
+});
+
+loadProfile();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InternHub – Student Career Platform</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--primary:#2563eb;--primary-dark:#1d4ed8;--navy:#0f172a;--accent:#7c3aed;}
+  *{font-family:'Inter',sans-serif;}
+  body{background:#f8fafc;color:var(--navy);}
+  .navbar{background:white;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:12px 0;}
+  .navbar-brand{font-weight:800;font-size:1.4rem;color:var(--primary)!important;}
+  .navbar-brand span{color:var(--navy);}
+  .nav-link{font-weight:500;color:#475569!important;font-size:.93rem;}
+  .nav-link:hover{color:var(--primary)!important;}
+  .btn-primary{background:var(--primary);border-color:var(--primary);font-weight:600;}
+  .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);}
+  .btn-outline-primary{color:var(--primary);border-color:var(--primary);font-weight:600;}
+  /* Hero */
+  .hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#312e81 100%);padding:100px 0 80px;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%);}
+  .hero h1{font-weight:800;font-size:3rem;color:white;line-height:1.2;}
+  .hero p{color:rgba(255,255,255,.75);font-size:1.1rem;max-width:550px;}
+  .hero-search{background:white;border-radius:12px;padding:8px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:650px;}
+  .hero-search input{border:none;outline:none;font-size:1rem;padding:8px 12px;flex:1;}
+  .hero-search select{border:none;border-left:1px solid #e2e8f0;outline:none;padding:8px 12px;color:#475569;font-size:.9rem;}
+  .stat-chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:6px 16px;color:white;font-size:.85rem;font-weight:500;display:inline-flex;align-items:center;gap:6px;}
+  /* Sections */
+  .section-title{font-weight:700;font-size:1.6rem;color:var(--navy);}
+  .section-sub{color:#64748b;font-size:.95rem;}
+  /* Cards */
+  .internship-card{background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0;transition:all .2s;cursor:pointer;}
+  .internship-card:hover{border-color:var(--primary);box-shadow:0 8px 25px rgba(37,99,235,.12);transform:translateY(-2px);}
+  .company-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:white;}
+  .skill-chip{background:#eff6ff;color:var(--primary);padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:500;}
+  .match-badge{background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600;}
+  .stipend-badge{background:#f0fdf4;color:#166534;font-weight:600;font-size:.85rem;}
+  /* Category cards */
+  .cat-card{background:white;border-radius:12px;padding:22px;border:1px solid #e2e8f0;text-align:center;transition:all .2s;}
+  .cat-card:hover{border-color:var(--primary);box-shadow:0 4px 15px rgba(37,99,235,.1);}
+  .cat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.4rem;}
+  /* How it works */
+  .step-num{width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;flex-shrink:0;}
+  /* CTA */
+  .cta-section{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:16px;padding:60px;text-align:center;color:white;}
+  /* Footer */
+  footer{background:var(--navy);color:#94a3b8;padding:60px 0 30px;}
+  footer a{color:#94a3b8;text-decoration:none;font-size:.9rem;}
+  footer a:hover{color:white;}
+  .footer-brand{font-weight:800;font-size:1.3rem;color:white;}
+  @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/index.html"><i class="bi bi-briefcase-fill me-2"></i>Intern<span>Hub</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="/internships.html"><i class="bi bi-search me-1"></i>Internships</a></li>
+        <li class="nav-item"><a class="nav-link" href="#companies"><i class="bi bi-building me-1"></i>Companies</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how"><i class="bi bi-info-circle me-1"></i>How it Works</a></li>
+      </ul>
+      <div class="d-flex gap-2" id="navAuth">
+        <a href="/login.html" class="btn btn-outline-primary btn-sm px-3">Login</a>
+        <a href="/register.html" class="btn btn-primary btn-sm px-3">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <span class="stat-chip"><i class="bi bi-people-fill"></i> <span id="statStudents">10K+</span> Students</span>
+          <span class="stat-chip"><i class="bi bi-building"></i> <span id="statCompanies">500+</span> Companies</span>
+          <span class="stat-chip"><i class="bi bi-briefcase"></i> <span id="statInternships">1,200+</span> Internships</span>
+        </div>
+        <h1>Connect Students With<br><span style="color:#93c5fd;">Meaningful Opportunities</span></h1>
+        <p class="mt-3">Discover internships, build your career, and connect with companies that value your skills. Your career journey starts here.</p>
+        <div class="hero-search mt-4 d-flex">
+          <i class="bi bi-search ms-2 my-auto text-muted"></i>
+          <input id="heroSearch" placeholder="Search by title, skill, or company..." class="w-100">
+          <select id="heroLocation">
+            <option value="">All Locations</option>
+            <option value="remote">Remote</option>
+            <option value="bangalore">Bangalore</option>
+            <option value="mumbai">Mumbai</option>
+            <option value="delhi">Delhi</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="pune">Pune</option>
+          </select>
+          <button class="btn btn-primary px-4" onclick="doSearch()">Search</button>
+        </div>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <span class="text-white-50 small">Trending:</span>
+          <a href="/internships.html?skill=java" class="badge bg-white bg-opacity-10 text-white text-decoration-none">Java</a>
+          <a href="/internships.html?skill=python" class="badge bg-white bg-opacity-10 text-white text-decoration-none">Python</a>
+          <a href="/internships.html?skill=react" class="badge bg-white bg-opacity-10 text-white text-decoration-none">React</a>
+          <a href="/internships.html?skill=data+science" class="badge bg-white bg-opacity-10 text-white text-decoration-none">Data Science</a>
+        </div>
+      </div>
+      <div class="col-lg-5 mt-5 mt-lg-0">
+        <div class="bg-white bg-opacity-10 rounded-4 p-4 text-white">
+          <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-white bg-opacity-10 rounded-3">
+            <div class="company-avatar" style="background:#2563eb;"><i class="bi bi-code-slash"></i></div>
+            <div><div class="fw-600">Java Full Stack Developer</div><small class="opacity-75">TechCorp · Hyderabad · ₹15,000/mo</small></div>
+            <span class="ms-auto badge bg-success">92% Match</span>
+          </div>
+          <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-white bg-opacity-10 rounded-3">
+            <div class="company-avatar" style="background:#7c3aed;"><i class="bi bi-bar-chart"></i></div>
+            <div><div class="fw-600">Data Science Intern</div><small class="opacity-75">DataGenix · Remote · ₹12,000/mo</small></div>
+            <span class="ms-auto badge bg-warning text-dark">85% Match</span>
+          </div>
+          <div class="d-flex align-items-center gap-3 p-3 bg-white bg-opacity-10 rounded-3">
+            <div class="company-avatar" style="background:#059669;"><i class="bi bi-globe"></i></div>
+            <div><div class="fw-600">Web Developer</div><small class="opacity-75">Innovate · Mumbai · ₹8,000/mo</small></div>
+            <span class="ms-auto badge bg-info">78% Match</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center">Browse by Category</h2>
+    <p class="section-sub text-center mb-4">Explore opportunities across industries</p>
+    <div class="row g-3">
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=software'">
+          <div class="cat-icon" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-code-slash"></i></div>
+          <div class="fw-600 small">Software Dev</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=data+science'">
+          <div class="cat-icon" style="background:#ede9fe;color:#7c3aed;"><i class="bi bi-bar-chart-fill"></i></div>
+          <div class="fw-600 small">Data Science</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=web'">
+          <div class="cat-icon" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-globe2"></i></div>
+          <div class="fw-600 small">Web Dev</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=ai'">
+          <div class="cat-icon" style="background:#fef3c7;color:#d97706;"><i class="bi bi-robot"></i></div>
+          <div class="fw-600 small">AI / ML</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=ui+ux'">
+          <div class="cat-icon" style="background:#fce7f3;color:#db2777;"><i class="bi bi-palette-fill"></i></div>
+          <div class="fw-600 small">UI / UX</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="cat-card h-100" onclick="window.location='/internships.html?skill=cloud'">
+          <div class="cat-icon" style="background:#cffafe;color:#0891b2;"><i class="bi bi-cloud-fill"></i></div>
+          <div class="fw-600 small">Cloud / DevOps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED INTERNSHIPS -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="section-title mb-1">Featured Internships</h2>
+        <p class="section-sub mb-0">Opportunities matching top student profiles</p>
+      </div>
+      <a href="/internships.html" class="btn btn-outline-primary btn-sm">View All <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-3" id="featuredList">
+      <div class="col-12 text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Loading internships...</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-5 bg-light" id="how">
+  <div class="container">
+    <h2 class="section-title text-center mb-2">How InternHub Works</h2>
+    <p class="section-sub text-center mb-5">Simple steps to launch your career</p>
+    <div class="row g-4">
+      <div class="col-md-3 text-center">
+        <div class="step-num mx-auto mb-3">01</div>
+        <h6 class="fw-700">Create Profile</h6>
+        <p class="text-muted small">Sign up and build your professional student profile with skills and education.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="step-num mx-auto mb-3">02</div>
+        <h6 class="fw-700">Discover</h6>
+        <p class="text-muted small">Browse and search internships. Our smart matching shows your skill compatibility.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="step-num mx-auto mb-3">03</div>
+        <h6 class="fw-700">Apply</h6>
+        <p class="text-muted small">Apply with one click. Track your application status in real time.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="step-num mx-auto mb-3">04</div>
+        <h6 class="fw-700">Get Hired</h6>
+        <p class="text-muted small">Get shortlisted, attend interviews, and launch your career!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5">
+  <div class="container">
+    <div class="cta-section">
+      <h2 class="fw-800 mb-2">Your next opportunity starts here.</h2>
+      <p class="mb-4 opacity-75">Join thousands of students already building their careers on InternHub.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="/register.html" class="btn btn-light btn-lg fw-600 px-5">Get Started Free</a>
+        <a href="/internships.html" class="btn btn-outline-light btn-lg px-5">Browse Internships</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="footer-brand mb-2"><i class="bi bi-briefcase-fill me-2"></i>InternHub</div>
+        <p class="small">The complete student career platform connecting students with meaningful internship opportunities.</p>
+      </div>
+      <div class="col-md-2">
+        <div class="text-white fw-600 mb-3 small">Students</div>
+        <div class="d-flex flex-column gap-2">
+          <a href="/internships.html">Browse Internships</a>
+          <a href="/register.html">Create Profile</a>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="text-white fw-600 mb-3 small">Companies</div>
+        <div class="d-flex flex-column gap-2">
+          <a href="/register.html">Post Internship</a>
+          <a href="/register.html">Create Account</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-white fw-600 mb-3 small">Connect</div>
+        <div class="d-flex gap-3">
+          <a href="#"><i class="bi bi-github fs-5"></i></a>
+          <a href="#"><i class="bi bi-linkedin fs-5"></i></a>
+          <a href="#"><i class="bi bi-twitter fs-5"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="border-top border-secondary pt-4 d-flex justify-content-between flex-wrap gap-2">
+      <small>© 2024 InternHub. All rights reserved.</small>
+      <small>Built with Java Spring Boot + MySQL</small>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const COLORS=['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
+function getColor(str){let h=0;for(let c of(str||'?'))h=c.charCodeAt(0)+((h<<5)-h);return COLORS[Math.abs(h)%COLORS.length];}
+function initials(name){return(name||'?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();}
+
+async function loadFeatured(){
+  try{
+    const res=await fetch('http://localhost:8080/api/public/internships');
+    const data=await res.json();
+    const el=document.getElementById('featuredList');
+    if(!data.length){el.innerHTML='<div class="col-12 text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No internships available yet</div>';return;}
+    el.innerHTML=data.slice(0,6).map(i=>`
+      <div class="col-md-6 col-lg-4">
+        <div class="internship-card h-100" onclick="window.location='/internship-detail.html?id=${i.id}'">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="company-avatar" style="background:${getColor(i.companyName)}">${initials(i.companyName)}</div>
+              <div><div class="fw-600">${i.title}</div><div class="text-muted small">${i.companyName}</div></div>
+            </div>
+            <i class="bi bi-bookmark text-muted" style="cursor:pointer"></i>
+          </div>
+          <div class="d-flex flex-wrap gap-2 text-muted small mb-3">
+            <span><i class="bi bi-geo-alt me-1"></i>${i.location||'Remote'}</span>
+            <span><i class="bi bi-calendar me-1"></i>${i.deadline?new Date(i.deadline).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'Open'}</span>
+          </div>
+          <div class="d-flex flex-wrap gap-1 mb-3">
+            ${(i.requiredSkills||'').split(',').slice(0,3).map(s=>`<span class="skill-chip">${s.trim()}</span>`).join('')}
+          </div>
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <span class="stipend-badge"><i class="bi bi-currency-rupee"></i>${i.stipend||'Unpaid'}</span>
+            <a href="/internship-detail.html?id=${i.id}" class="btn btn-outline-primary btn-sm">Apply Now</a>
+          </div>
+        </div>
+      </div>`).join('');
+  }catch(e){document.getElementById('featuredList').innerHTML='<div class="col-12 text-center text-warning py-3"><i class="bi bi-exclamation-triangle me-2"></i>Backend not connected. Start the server.</div>';}
+}
+
+function doSearch(){
+  const kw=document.getElementById('heroSearch').value;
+  const loc=document.getElementById('heroLocation').value;
+  let url='/internships.html?';
+  if(kw)url+='keyword='+encodeURIComponent(kw)+'&';
+  if(loc)url+='location='+encodeURIComponent(loc);
+  window.location=url;
+}
+document.getElementById('heroSearch').addEventListener('keydown',e=>e.key==='Enter'&&doSearch());
+
+// Update nav if logged in
+const token=localStorage.getItem('authToken');
+const role=localStorage.getItem('userRole')||'';
+if(token){
+  let href='/login.html';
+  if(role.includes('STUDENT'))href='/student-dashboard.html';
+  else if(role.includes('COMPANY'))href='/company-dashboard.html';
+  else if(role.includes('ADMIN'))href='/admin-dashboard.html';
+  document.getElementById('navAuth').innerHTML=`<a href="${href}" class="btn btn-primary btn-sm px-3">My Dashboard</a><button onclick="localStorage.clear();location.reload();" class="btn btn-outline-secondary btn-sm">Logout</button>`;
+}
+
+loadFeatured();
+</script>
+</body>
+</html>
