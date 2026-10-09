@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,9 +57,9 @@
           <label class="form-label text-muted small fw-600">Stipend</label>
           <select class="form-select form-select-sm" id="fStipend">
             <option value="">Any</option>
-            <option value="5000">₹5,000+</option>
-            <option value="10000">₹10,000+</option>
-            <option value="15000">₹15,000+</option>
+            <option value="5000">â‚¹5,000+</option>
+            <option value="10000">â‚¹10,000+</option>
+            <option value="15000">â‚¹15,000+</option>
           </select>
         </div>
         <button class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()">Clear Filters</button>
@@ -80,7 +80,7 @@
 </div>
 
 <script>
-const API='http://localhost:8080';
+const API='https://internhub-backend-2hyx.onrender.com';
 const COLORS=['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
 function getColor(s){let h=0;for(let c of(s||''))h=c.charCodeAt(0)+((h<<5)-h);return COLORS[Math.abs(h)%COLORS.length];}
 function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();}
@@ -153,7 +153,7 @@ async function applyNow(id,btn){
   if(!token){window.location='/login.html';return;}
   btn.disabled=true;btn.textContent='Applying...';
   try{
-    const res=await fetch(`http://localhost:8080/api/student/apply/${id}`,{method:'POST',headers:{Authorization:token}});
+    const res=await fetch(`https://internhub-backend-2hyx.onrender.com/api/student/apply/${id}`,{method:'POST',headers:{Authorization:token}});
     const data=await res.json();
     if(res.ok){btn.textContent='Applied!';btn.className='btn btn-success btn-sm';showToast('Application submitted successfully!','success');}
     else{btn.disabled=false;btn.textContent='Apply Now';showToast(data.error||'Failed','error');}
@@ -164,7 +164,7 @@ async function saveInternship(id,btn){
   const token=localStorage.getItem('authToken');
   if(!token){window.location='/login.html';return;}
   try{
-    const res=await fetch(`http://localhost:8080/api/student/save/${id}`,{method:'POST',headers:{Authorization:token}});
+    const res=await fetch(`https://internhub-backend-2hyx.onrender.com/api/student/save/${id}`,{method:'POST',headers:{Authorization:token}});
     const data=await res.json();
     if(res.ok){btn.innerHTML='<i class="bi bi-bookmark-fill text-primary"></i>';showToast('Saved!','success');}
     else showToast(data.error||'Failed','error');

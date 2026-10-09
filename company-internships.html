@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +55,7 @@
             <div class="col-12"><label class="form-label small fw-600">Title</label><input type="text" id="fTitle" class="form-control" required placeholder="e.g. Java Software Engineer Intern"></div>
             <div class="col-12"><label class="form-label small fw-600">Description</label><textarea id="fDesc" class="form-control" rows="4" required></textarea></div>
             <div class="col-md-6"><label class="form-label small fw-600">Location</label><input type="text" id="fLoc" class="form-control" required placeholder="e.g. Remote, Bangalore"></div>
-            <div class="col-md-6"><label class="form-label small fw-600">Stipend / Salary</label><input type="text" id="fStipend" class="form-control" required placeholder="e.g. ₹15,000/month"></div>
+            <div class="col-md-6"><label class="form-label small fw-600">Stipend / Salary</label><input type="text" id="fStipend" class="form-control" required placeholder="e.g. â‚¹15,000/month"></div>
             <div class="col-md-6"><label class="form-label small fw-600">Required Skills (comma separated)</label><input type="text" id="fSkills" class="form-control" required placeholder="Java, Spring Boot, MySQL"></div>
             <div class="col-md-6"><label class="form-label small fw-600">Deadline (Optional)</label><input type="datetime-local" id="fDeadline" class="form-control"></div>
           </div>
@@ -67,7 +67,7 @@
 </div>
 
 <script>
-const API='http://localhost:8080';
+const API='https://internhub-backend-2hyx.onrender.com';
 const token=localStorage.getItem('authToken');
 if(!token)window.location='/login.html';
 let isVerified=false;

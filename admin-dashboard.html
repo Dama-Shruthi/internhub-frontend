@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,28 +40,28 @@
       <div class="col-6 col-md-3">
         <div class="stat-card">
           <div class="stat-icon mb-2" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-people-fill"></i></div>
-          <div class="stat-value" id="sUsers">—</div>
+          <div class="stat-value" id="sUsers">â€”</div>
           <div class="text-muted small">Total Users</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="stat-card">
           <div class="stat-icon mb-2" style="background:#fef3c7;color:#d97706;"><i class="bi bi-building"></i></div>
-          <div class="stat-value" id="sComps">—</div>
+          <div class="stat-value" id="sComps">â€”</div>
           <div class="text-muted small">Companies (V/P)</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="stat-card">
           <div class="stat-icon mb-2" style="background:#ede9fe;color:#7c3aed;"><i class="bi bi-briefcase-fill"></i></div>
-          <div class="stat-value" id="sOpps">—</div>
+          <div class="stat-value" id="sOpps">â€”</div>
           <div class="text-muted small">Active Opportunities</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="stat-card">
           <div class="stat-icon mb-2" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-file-earmark-check-fill"></i></div>
-          <div class="stat-value" id="sApps">—</div>
+          <div class="stat-value" id="sApps">â€”</div>
           <div class="text-muted small">Total Applications</div>
         </div>
       </div>
@@ -79,7 +79,7 @@
   </div>
 </div>
 <script>
-const API='http://localhost:8080';
+const API='https://internhub-backend-2hyx.onrender.com';
 const token=localStorage.getItem('authToken');
 if(!token)window.location='/login.html';
 
