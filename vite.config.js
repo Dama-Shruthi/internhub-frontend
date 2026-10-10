@@ -19,7 +19,8 @@ export default defineConfig({
         studentApplications: resolve(__dirname, 'student-applications.html'),
         studentDashboard: resolve(__dirname, 'student-dashboard.html'),
         studentPortfolio: resolve(__dirname, 'student-portfolio.html'),
-        studentProfile: resolve(__dirname, 'student-profile.html')
+        studentProfile: resolve(__dirname, 'student-profile.html'),
+        studentNotifications: resolve(__dirname, 'student-notifications.html')
       }
     }
   }
