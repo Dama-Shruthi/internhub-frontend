@@ -12,6 +12,7 @@ export default defineConfig({
         companyProfile: resolve(__dirname, 'company-profile.html'),
         events: resolve(__dirname, 'events.html'),
         internships: resolve(__dirname, 'internships.html'),
+        internshipDetail: resolve(__dirname, 'internship-detail.html'),
         learning: resolve(__dirname, 'learning.html'),
         login: resolve(__dirname, 'login.html'),
         network: resolve(__dirname, 'network.html'),
